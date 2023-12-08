@@ -1,23 +1,30 @@
 import type { GameObject } from './object';
 
 export class Bird implements GameObject {
+	private image = new Image();
+
 	constructor(private ctx: CanvasRenderingContext2D) {
 		// Initial draw
+		this.image.src = 'assets/thors_hammer.png';
 		this.draw();
 	}
 
-	position: { x: number; y: number } = { x: 100, y: 300 };
-	velocity = 0;
-	gravity = 0.05;
-	width = 30;
-	height = 30;
+	public position: { x: number; y: number } = { x: 100, y: 300 };
+	public width = 50;
+	public height = 50;
+
+	private velocity = 0;
+	private gravity = 0.05;
+	private rotationAngle = 0;
 
 	draw() {
-		this.ctx.beginPath();
-		this.ctx.arc(this.position.x, this.position.y, this.width / 2, 0, Math.PI * 2, false);
-		this.ctx.fillStyle = 'lightblue';
-		this.ctx.fill();
-		this.ctx.closePath();
+		this.ctx.save();
+		this.ctx.translate(this.position.x + this.width / 2, this.position.y + this.height / 2);
+		this.ctx.rotate((this.rotationAngle * Math.PI) / 180);
+		this.ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+		this.ctx.restore();
+
+		this.rotationAngle += 2;
 	}
 
 	checkFloorCollision() {
@@ -37,6 +44,7 @@ export class Bird implements GameObject {
 	reset() {
 		this.position = { x: 100, y: 300 };
 		this.velocity = 0;
+		this.rotationAngle = 0;
 
 		this.draw();
 	}
