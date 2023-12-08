@@ -8,6 +8,9 @@
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
 
+	let canvasWidth = 0;
+	let canvasHeight = 0;
+
 	let game: Game;
 	let bird: Bird;
 	let pipes: Pipes;
@@ -17,6 +20,17 @@
 	onMount(() => {
 		ctx = canvas.getContext('2d');
 		if (!ctx) return;
+
+		canvasWidth = window.innerWidth;
+		canvasHeight = window.innerHeight;
+
+		if (canvasWidth > 800) {
+			canvasWidth = 800;
+		}
+
+		if (canvasHeight > 600) {
+			canvasHeight = 600;
+		}
 
 		game = new Game(ctx);
 		bird = new Bird(ctx);
@@ -78,7 +92,9 @@
 		}
 
 		// Game over if the bird hits a pipe
-		if (pipes.checkCollision(bird.position.x, bird.position.y, 30, 30)) {
+		if (
+			pipes.checkCollision(canvas.height, bird.position.x, bird.position.y, bird.width, bird.height)
+		) {
 			gameOver(ctx);
 			return;
 		}
@@ -93,5 +109,5 @@
 </script>
 
 <div class="flex justify-center mt-5">
-	<canvas bind:this={canvas} width="800" height="600" on:click={onClick} />
+	<canvas bind:this={canvas} width={canvasWidth} height={canvasHeight} on:click={onClick} />
 </div>

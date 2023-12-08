@@ -9,7 +9,11 @@ type Pipe = {
 };
 
 export class Pipes implements GameObject {
-	constructor(private ctx: CanvasRenderingContext2D) {}
+	private image = new Image();
+
+	constructor(private ctx: CanvasRenderingContext2D) {
+		this.image.src = 'assets/pipe.png';
+	}
 
 	private pipe_width = 50;
 	private pipe_gap = 150;
@@ -19,26 +23,58 @@ export class Pipes implements GameObject {
 	pipes: Pipe[] = [];
 
 	private drawPipe(x: number, y: number, width: number, height: number) {
-		this.ctx.beginPath();
-		this.ctx.rect(x, y, width, height);
-		this.ctx.fillStyle = 'green';
-		this.ctx.fill();
-		this.ctx.closePath();
+		const imageHeight = this.image.naturalHeight; // Get the natural height of the image
+		let drawnHeight = 0;
+
+		while (drawnHeight < height) {
+			const remainingHeight = height - drawnHeight;
+			const drawHeight = Math.min(imageHeight, remainingHeight);
+			this.ctx.drawImage(this.image, x, y + drawnHeight, width, drawHeight);
+			drawnHeight += drawHeight;
+		}
 	}
 
-	checkCollision(birdX: number, birdY: number, birdWidth: number, birdHeight: number) {
+	checkCollision(
+		canvasHeight: number,
+		birdX: number,
+		birdY: number,
+		birdWidth: number,
+		birdHeight: number
+	) {
 		if (this.pipes.length === 0) return false;
 
 		const pipe = this.pipes[0];
-		const birdRightEdge = birdX + birdWidth / 2;
-		const birdBottomEdge = birdY + birdHeight / 2;
 
-		const isHorizontallyInsidePipe =
-			birdRightEdge > pipe.x && birdX - birdWidth / 2 < pipe.x + pipe.width;
-		const isVerticallyColliding =
-			birdY - birdHeight / 2 < pipe.height || birdBottomEdge > pipe.height + this.pipe_gap;
+		// Collision offset
+		const offset = 10;
+		birdWidth -= offset;
+		birdHeight -= offset;
 
-		if (isHorizontallyInsidePipe && isVerticallyColliding) return true;
+		// Define the bounding box for the top pipe
+		const topPipeRightEdge = pipe.x + this.pipe_width;
+		const topPipeBottomEdge = pipe.height;
+
+		// Define the bounding box for the bottom pipe
+		const bottomPipeTopEdge = pipe.height + this.pipe_gap;
+		const bottomPipeRightEdge = pipe.x + this.pipe_width;
+		const bottomPipeBottomEdge = canvasHeight; // or your canvas height
+
+		// Check if the bird intersects with the top pipe
+		const collideTop =
+			birdX + birdWidth > pipe.x &&
+			birdX < topPipeRightEdge &&
+			birdY < topPipeBottomEdge &&
+			birdY + birdHeight > 0;
+
+		// Check if the bird intersects with the bottom pipe
+		const collideBottom =
+			birdX + birdWidth > pipe.x &&
+			birdX < bottomPipeRightEdge &&
+			birdY < bottomPipeBottomEdge &&
+			birdY + birdHeight > bottomPipeTopEdge;
+
+		// If there's a collision with either the top or bottom pipe, return true
+		if (collideTop || collideBottom) return true;
 
 		return false;
 	}
@@ -80,7 +116,7 @@ export class Pipes implements GameObject {
 
 		for (let i = this.pipes.length - 1; i >= 0; i--) {
 			const pipe = this.pipes[i];
-			pipe.x -= 1.5;
+			pipe.x -= 2;
 
 			if (pipe.x < -this.pipe_width) {
 				this.pipes.splice(i, 1);
