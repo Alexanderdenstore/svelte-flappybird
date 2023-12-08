@@ -48,7 +48,8 @@ export class Pipes implements GameObject {
 
 		// Collision offset
 		const offset = 10;
-		birdWidth -= offset;
+		const offsetWidth = 10;
+		birdWidth -= offset + offsetWidth;
 		birdHeight -= offset;
 
 		// Define the bounding box for the top pipe

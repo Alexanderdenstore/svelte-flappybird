@@ -15,7 +15,7 @@ export class Bird implements GameObject {
 
 	constructor(private ctx: CanvasRenderingContext2D) {
 		// Initial draw
-		this.image.src = 'assets/thors_hammer.png';
+		this.image.src = 'assets/axe.png';
 
 		this.position.x = 100;
 		this.position.y = this.ctx.canvas.height / 2;
