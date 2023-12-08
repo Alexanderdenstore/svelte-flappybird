@@ -1,5 +1,5 @@
 export interface GameObject {
-	update: () => void;
+	update: (deltaTime: number) => void;
 	draw: () => void;
 	reset?: () => void;
 }

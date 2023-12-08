@@ -2,6 +2,7 @@ export class Game {
 	hasStarted = false;
 	hasEnded = false;
 
+	private highscore = 0;
 	score = 0;
 
 	background = new Image();
@@ -16,41 +17,70 @@ export class Game {
 			this.bgX2 = this.background.width;
 			this.drawStart();
 		};
+
+		this.highscore = parseInt(this.getHighScore());
+	}
+
+	getHighScore() {
+		return localStorage.getItem('highScore') || '0';
+	}
+
+	private setHighScore(score: number) {
+		localStorage.setItem('highScore', score.toString());
 	}
 
 	drawStart() {
+		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
 		const centerX = this.ctx.canvas.width / 2;
 		const centerY = this.ctx.canvas.height / 2;
 
 		this.drawBackground();
-
+		const text = 'Press space to start';
 		this.ctx.font = '36px Arial';
-		this.ctx.fillStyle = 'white';
-		this.ctx.fillText('Press space to start', centerX, centerY);
+		const textWidth = this.ctx.measureText(text).width;
+		const textX = centerX - textWidth / 2;
+
+		this.ctx.fillStyle = 'orange';
+		this.ctx.fillText(text, textX, centerY);
 	}
 
 	drawScore() {
 		const centerX = this.ctx.canvas.width / 2;
-		const centerY = 50;
 
+		const text = this.score.toString();
 		this.ctx.font = '46px Arial';
+		const textWidth = this.ctx.measureText(text).width;
+		const textX = centerX - textWidth / 2;
+
 		this.ctx.fillStyle = 'white';
-		this.ctx.fillText(this.score.toString(), centerX, centerY);
+		this.ctx.fillText(text, textX, 50);
 	}
 
 	drawGameOver() {
 		const centerX = this.ctx.canvas.width / 2;
 		const centerY = this.ctx.canvas.height / 2;
 
+		let text = 'Game Over';
 		this.ctx.font = '36px Arial';
+		let textWidth = this.ctx.measureText(text).width;
+		let textX = centerX - textWidth / 2;
 		this.ctx.fillStyle = 'white';
-		this.ctx.fillText('Game Over', centerX, centerY);
-		this.ctx.fillText('Score: ' + this.score, centerX, centerY + 50);
+		this.ctx.fillText(text, textX, centerY);
+
+		text = 'Score: ' + this.score;
+		this.ctx.font = '24px Arial';
+		textWidth = this.ctx.measureText(text).width;
+		textX = centerX - textWidth / 2;
+		this.ctx.fillStyle = 'orange';
+		this.ctx.fillText(text, textX, centerY + 50);
 	}
 
 	drawBackground() {
+		this.ctx.globalAlpha = 0.3;
 		this.ctx.drawImage(this.background, this.bgX1, 0);
 		this.ctx.drawImage(this.background, this.bgX2, 0);
+		this.ctx.globalAlpha = 1;
 
 		this.bgX1 -= this.speed;
 		this.bgX2 -= this.speed;
@@ -62,6 +92,11 @@ export class Game {
 	onGameOver() {
 		this.hasStarted = false;
 		this.hasEnded = true;
+
+		if (this.score > this.highscore) {
+			this.setHighScore(this.score);
+		}
+
 		this.drawGameOver();
 	}
 

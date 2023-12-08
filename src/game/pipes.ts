@@ -18,6 +18,7 @@ export class Pipes implements GameObject {
 	private pipe_width = 50;
 	private pipe_gap = 150;
 	private frame_interval = 120;
+	private speed = 200;
 
 	frameCount: number = 0;
 	pipes: Pipe[] = [];
@@ -101,7 +102,7 @@ export class Pipes implements GameObject {
 		}
 	}
 
-	update() {
+	update(dt: number) {
 		this.frameCount++;
 
 		if (this.frameCount % this.frame_interval === 0) {
@@ -116,7 +117,7 @@ export class Pipes implements GameObject {
 
 		for (let i = this.pipes.length - 1; i >= 0; i--) {
 			const pipe = this.pipes[i];
-			pipe.x -= 2;
+			pipe.x -= this.speed * dt; // Apply dt to the speed
 
 			if (pipe.x < -this.pipe_width) {
 				this.pipes.splice(i, 1);
