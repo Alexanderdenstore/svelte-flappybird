@@ -11,7 +11,7 @@
 	let canvasWidth = 0;
 	let canvasHeight = 0;
 
-	let highscore = '';
+	let highscore = 0;
 	let game: Game;
 	let bird: Bird;
 	let pipes: Pipes;
@@ -59,8 +59,8 @@
 	function gameOver() {
 		cancelAnimationFrame(handle);
 
-		game.onGameOver();
-		highscore = game.getHighScore();
+		const currentHighscore = game.onGameOver();
+		highscore = currentHighscore;
 
 		setTimeout(() => {
 			bird.reset();

@@ -18,14 +18,16 @@ export class Game {
 			this.drawStart();
 		};
 
-		this.highscore = parseInt(this.getHighScore());
+		this.highscore = this.getHighScore();
 	}
 
-	getHighScore() {
-		return localStorage.getItem('highScore') || '0';
+	getHighScore(): number {
+		const highScore = localStorage.getItem('highScore') || '0';
+		return parseInt(highScore);
 	}
 
 	private setHighScore(score: number) {
+		this.highscore = score;
 		localStorage.setItem('highScore', score.toString());
 	}
 
@@ -89,7 +91,7 @@ export class Game {
 		if (this.bgX2 < -this.background.width) this.bgX2 = this.bgX1 + this.background.width;
 	}
 
-	onGameOver() {
+	onGameOver(): number {
 		this.hasStarted = false;
 		this.hasEnded = true;
 
@@ -98,6 +100,7 @@ export class Game {
 		}
 
 		this.drawGameOver();
+		return this.highscore;
 	}
 
 	reset() {
