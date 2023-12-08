@@ -22,6 +22,8 @@ export class Game {
 		const centerX = this.ctx.canvas.width / 2;
 		const centerY = this.ctx.canvas.height / 2;
 
+		this.drawBackground();
+
 		this.ctx.font = '36px Arial';
 		this.ctx.fillStyle = 'white';
 		this.ctx.fillText('Press space to start', centerX, centerY);
