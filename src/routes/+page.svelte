@@ -115,9 +115,15 @@
 	}
 </script>
 
-<div class="flex flex-col justify-center items-center mt-5">
+<div class="flex flex-col justify-center items-center mt-5 select-none">
 	{#if highscore}
 		<div class="md:text-sm text-orange-300">Highscore: {highscore}</div>
 	{/if}
-	<canvas bind:this={canvas} width={canvasWidth} height={canvasHeight} on:click={onClick} />
+	<canvas
+		bind:this={canvas}
+		width={canvasWidth}
+		height={canvasHeight}
+		on:click={onClick}
+		on:touchmove|preventDefault
+	/>
 </div>
